@@ -60,6 +60,7 @@ mod macros;
 
 pub mod render;
 
+use render::raw_renderer::RawRenderer;
 use render::text_renderer::{
     PlainDecorator, RenderLine, RichAnnotation, RichDecorator, TaggedLine, TextDecorator,
     TextRenderer,
@@ -1421,6 +1422,30 @@ where
 {
     let decorator = PlainDecorator::new();
     from_read_with_decorator(input, width, decorator)
+}
+
+/// Reads HTML from `input`, and returns a `String` containing the raw text.
+pub fn from_read_raw<R>(mut input: R) -> String
+where
+    R: io::Read,
+{
+    let opts = ParseOpts {
+        tree_builder: TreeBuilderOpts {
+            drop_doctype: true,
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+    let dom = parse_document(RcDom::default(), opts)
+        .from_utf8()
+        .read_from(&mut input)
+        .unwrap();
+
+    let builder = RawRenderer::new(); //TextRenderer::new(width, decorator);
+
+    let render_tree = dom_to_render_tree(dom.document.clone(), &mut Discard {}).unwrap();
+    let builder = render_tree_to_string(builder, render_tree, &mut Discard {});
+    builder.into_string()
 }
 
 /// Reads HTML from `input`, and returns text wrapped to `width` columns.

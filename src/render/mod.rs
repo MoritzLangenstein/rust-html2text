@@ -1,6 +1,7 @@
 //! Module containing the `Renderer` interface for constructing a
 //! particular text output.
 
+pub mod raw_renderer;
 pub mod text_renderer;
 
 /// A type which is a backend for HTML to text rendering.
