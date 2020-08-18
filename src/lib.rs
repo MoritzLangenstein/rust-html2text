@@ -609,6 +609,8 @@ fn td_to_render_tree<'a, 'b, T: Write>(
             }
         }
     }
+    // colspan=0 has special semantics which are not implemented here
+    // (see https://www.w3schools.com/tags/att_td_colspan.asp (see Attribute Values))
     colspan = usize::max(colspan, 1);
     pending(handle, move |_, children| {
         Some(RenderNode::new(RenderNodeInfo::TableCell(
