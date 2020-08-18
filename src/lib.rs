@@ -609,6 +609,7 @@ fn td_to_render_tree<'a, 'b, T: Write>(
             }
         }
     }
+    colspan = usize::max(colspan, 1);
     pending(handle, move |_, children| {
         Some(RenderNode::new(RenderNodeInfo::TableCell(
             RenderTableCell {
